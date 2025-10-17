@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
+    <h1 class="text-xl font-semibold text-indigo-400">Welcome, <%= user ? user.name : "Guest" %></h1>
+    <a href="/logout" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-medium transition">
+      Logout
+    </a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto mt-10 px-4">
+
+    <!-- Create New Post -->
+    <section class="bg-gray-800 rounded-2xl p-6 shadow-lg mb-10">
+      <h2 class="text-lg font-semibold mb-4 text-white">📝 Create a New Post</h2>
+      <form action="/post" method="POST" class="space-y-4">
+        <textarea
+          name="content"
+          placeholder="What's on your mind?"
+          required
+          rows="4"
+          class="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+        ></textarea>
+        <button
+          type="submit"
+          class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-xl text-white font-medium transition w-full">
+          Post
+        </button>
+      </form>
+    </section>
+
+    <!-- Posts List -->
+    <section>
+      <h2 class="text-lg font-semibold mb-6 text-indigo-400">📢 Your Posts</h2>
+
+      <% if (posts.length === 0) { %>
+        <p class="text-gray-400 text-center">No posts yet. Start sharing your thoughts!</p>
+      <% } %>
+
+      <% posts.forEach(post => { %>
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-lg font-semibold text-indigo-400"><%= user.name %></h4>
+            <small class="text-gray-400">🕒 Just now</small>
+          </div>
+
+          <p class="text-gray-200 mb-4 leading-relaxed">
+            <%= post.content %>
+          </p>
+
+          <%
+            const postLikes = (post.likes || []).filter(like => like).map(like => like.toString());
+            const hasLiked = user && postLikes.includes(user._id.toString());
+            const likeCount = postLikes.length;
+          %>
+
+          <div class="flex items-center justify-between text-sm text-gray-400">
+            <span class="text-gray-300">❤️ Likes: <%= likeCount %></span>
+            <div class="space-x-4">
+              <% if (hasLiked) { %>
+                <a href="/like/<%= post._id %>" class="text-indigo-400 hover:text-indigo-300 transition">
+                  Unlike
+                </a>
+              <% } else { %>
+                <a href="/like/<%= post._id %>" class="text-indigo-400 hover:text-indigo-300 transition">
+                  Like
+                </a>
+              <% } %>
+
+              <a href="/edit/<%= post._id %>" class="text-gray-400 hover:text-gray-200 transition">
+                ✏️ Edit
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </section>
+  </main>
+
+</body>
+</html>

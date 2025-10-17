@@ -1,0 +1,15 @@
+# Create .gitignore file
+touch .gitignore
+```
+
+Add this content to `.gitignore`:
+```
+node_modules/
+.env
+.DS_Store
+*.log
+npm-debug.log*
+.vscode/
+coverage/
+dist/
+build/
